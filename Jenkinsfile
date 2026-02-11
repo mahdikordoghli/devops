@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'maven3'  // Utilise l'installation locale
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -14,13 +10,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh "mvn clean compile"
+                sh '/opt/maven/bin/mvn clean compile'
             }
         }
 
         stage('Package') {
             steps {
-                sh "mvn package"
+                sh '/opt/maven/bin/mvn package'
             }
         }
 

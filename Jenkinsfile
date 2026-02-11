@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    environment {
+        JAVA_HOME = "/usr/lib/jvm/temurin-21-jdk-amd64" // Use the actual JDK directory
+        PATH = "${JAVA_HOME}/bin:/opt/maven/bin:${env.PATH}"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -10,18 +15,13 @@ pipeline {
 
         stage('Build & Package') {
             steps {
-                // Directly set JAVA_HOME and PATH in the shell
                 sh '''
-                export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-                export PATH=$JAVA_HOME/bin:/opt/maven/bin:$PATH
+                    echo "JAVA_HOME = $JAVA_HOME"
+                    java -version
+                    mvn -version
 
-                # Verify Java & Maven versions
-                java -version
-                mvn -version
-
-                # Build and package
-                mvn clean install -DskipTests
-                mvn package -DskipTests
+                    mvn clean install -DskipTests
+                    mvn package -DskipTests
                 '''
             }
         }

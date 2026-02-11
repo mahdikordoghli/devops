@@ -4,9 +4,10 @@ pipeline {
     stages {
         stage('Test') {
             steps {
-                echo 'Pipeline fonctionne !'
+                echo 'Pipeline fonctionne correctement !'
             }
         }
     }
 }
+
 

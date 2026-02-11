@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'maven3'    // Nom exact de Maven configuré dans Jenkins
-        // jdk 'JDK17'    // Décommente si tu as configuré un JDK
+        maven 'maven3'  // Utilise l'installation locale
     }
 
     stages {
@@ -15,20 +14,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                script {
-                    // Get Maven home from Jenkins tool config
-                    def mvnHome = tool 'maven3'
-                    sh "${mvnHome}/bin/mvn clean compile"
-                }
+                sh "mvn clean compile"
             }
         }
 
         stage('Package') {
             steps {
-                script {
-                    def mvnHome = tool 'maven3'
-                    sh "${mvnHome}/bin/mvn package"
-                }
+                sh "mvn package"
             }
         }
 
@@ -39,11 +31,3 @@ pipeline {
         }
     }
 }
-
-
-
-
-
-
-
-

@@ -1,13 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        // Set the JDK for the pipeline
-        JAVA_HOME = "/usr/lib/jvm/java-21-openjdk-amd64"
-        PATH = "${JAVA_HOME}/bin:${env.PATH}"
-        MVN_HOME = "/opt/maven"
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -15,38 +8,33 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build & Package') {
             steps {
-                // Build project and skip tests
+                // Directly set JAVA_HOME and PATH in the shell
                 sh '''
-                export JAVA_HOME=${JAVA_HOME}
-                export PATH=$JAVA_HOME/bin:$PATH
-                ${MVN_HOME}/bin/mvn clean install -DskipTests
-                '''
-            }
-        }
+                export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+                export PATH=$JAVA_HOME/bin:/opt/maven/bin:$PATH
 
-        stage('Package') {
-            steps {
-                // Package the app (jar/war)
-                sh '''
-                export JAVA_HOME=${JAVA_HOME}
-                export PATH=$JAVA_HOME/bin:$PATH
-                ${MVN_HOME}/bin/mvn package -DskipTests
+                # Verify Java & Maven versions
+                java -version
+                mvn -version
+
+                # Build and package
+                mvn clean install -DskipTests
+                mvn package -DskipTests
                 '''
             }
         }
 
         stage('Success') {
             steps {
-                echo 'Build and Package completed successfully!'
+                echo 'Build and package completed successfully!'
             }
         }
     }
 
     post {
         always {
-            // Archive artifacts (optional)
             archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
         }
         failure {

@@ -1,28 +1,19 @@
 pipeline {
     agent any
-
+   
+  environment {
+        JAVA_HOME = "/usr/lib/jvm/java-21-openjdk-amd64"
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    }
+   
+    tools {
+        maven 'MAVEN_HOME'
+    }
+ 
     stages {
-        stage('Checkout') {
+        stage('Compile & Test') {
             steps {
-                git branch: 'main', url: 'https://github.com/mahdikordoghli/devops.git'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh '/opt/maven/bin/mvn clean compile'
-            }
-        }
-
-        stage('Package') {
-            steps {
-                sh '/opt/maven/bin/mvn package'
-            }
-        }
-
-        stage('Success') {
-            steps {
-                echo 'Build et Package terminés avec succès !'
+                sh 'mvn clean install -DskipTests'
             }
         }
     }

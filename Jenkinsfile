@@ -25,6 +25,15 @@ pipeline {
                 '''
             }
         }
+        stage('SONARQUBE') {
+            environment {
+                // 'sonarqube' est l'ID du secret (Token) que tu dois créer dans Jenkins
+                SONAR_AUTH_TOKEN = credentials('sonarqube')
+            }
+            steps {
+                sh "mvn sonar:sonar -Dsonar.projectKey=devops_git -Dsonar.host.url=${SONAR_HOST_URL} -Dsonar.token=${SONAR_AUTH_TOKEN}"
+            }
+        }
 
         stage('Success') {
             steps {

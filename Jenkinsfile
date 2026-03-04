@@ -27,7 +27,7 @@ pipeline {
         }
         stage('SONARQUBE') {
             environment {
-                // 'sonarqube' est l'ID du secret (Token) que tu dois créer dans Jenkins
+                SONAR_HOST_URL = 'http://192.168.50.4:9000/'
                 SONAR_AUTH_TOKEN = credentials('sonarqube')
             }
             steps {
